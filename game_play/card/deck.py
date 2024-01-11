@@ -22,16 +22,17 @@ class Deck:
                 face_card.extend([(color, str(value))] * 2)
             for value in ['+1', 'flip', 'passed', 'revert']:
                 face_card.extend([(color, value)] * 2)
-            face_card.extend([('w', '+2')] * 2)
-            face_card.extend([('w', 'choose_color')] * 2)
+        face_card.extend([('w', '+2')] * 4)
+        face_card.extend([('w', 'choose_color')] * 4)
 
         for color in ['o', 'c', 'm', 'p']:
             for value in range(1, 10):
                 flip_card.extend([(color, str(value))] * 2)
             for value in ['+5', 'flip', 'repeat', 'revert']:
                 flip_card.extend([(color, value)] * 2)
-            flip_card.extend([('w', 'find_color')] * 2)
-            flip_card.extend([('w', 'choose_color')] * 2)
+        flip_card.extend([('w', 'find_color')] * 4)
+        flip_card.extend([('w', 'choose_color')] * 4)
+        
         random.shuffle(face_card)
         random.shuffle(flip_card)
         self.card = [
@@ -46,7 +47,7 @@ class Deck:
     def __repr__(self):
         return '\n'.join([f'[{str(card)}]' for card in self.card])
 
-    def give_card(self):
+    def give_card(self) -> Card:
         return self.card.pop()
 
     def shuffle(self) -> None:
