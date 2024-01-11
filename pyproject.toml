@@ -1,0 +1,14 @@
+[tool.poetry]
+name = "uno-game"
+version = "0.0.1"
+description = "Game UNO Flip on web"
+authors = ["alexqwerty777 <alexqwerty777@mail.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
