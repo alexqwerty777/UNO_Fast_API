@@ -2,7 +2,7 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.responses import HTMLResponse
 import logging
 
-from web.Fast_API.server.manager import ConnectionManager
+from server.manager.connection_manager import ConnectionManager
 
 logging.basicConfig(level=logging.INFO, filename="log.log", filemode="w")
 app = FastAPI()
@@ -10,31 +10,37 @@ manager = ConnectionManager()
 
 html = """-"""
 
+
 @app.get("/")
 async def get():
     return HTMLResponse(html)
+
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     # await websocket.accept()
     try:
         await manager.connect(websocket)
+        print('Websocket')
         while True:
             data = await websocket.receive_text()
             # await websocket.send_text(f"Message text was: {data}")
-            if not websocket in manager.players.keys():
+            if websocket not in manager.players.keys():
                 await manager.add_player(name=data, websocket=websocket)
+
             else:
-                # await manager.send_personal_message(f"Player {manager.players.get(websocket).name} wrote: {data}", websocket)
                 if data == 'start':
-                    await manager.start_game()
+                    await manager.start_game(room_id=manager.players.get(websocket).room_id)
                 else:
-                    await manager.broadcast(f'Player {manager.players.get(websocket).name}: {data}')
+                    await manager.send_message_to_room(
+                        message=f"Player {manager.players.get(websocket).name} wrote: {data}",
+                        room_id=manager.players.get(websocket).room_id)
 
     except WebSocketDisconnect:
         player = manager.players[websocket]
         manager.disconnect(websocket)
         await manager.broadcast(f"{player} left the chat")
 
-    except:
-        pass
+    #
+    # except:
+    #     pass
